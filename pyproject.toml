@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "recode-engine_DavidRodriguezSoaresCUI"
+version = "0.0.1"
+authors = [
+  { name="DavidRodriguezSoaresCUI", email="fireblaze904+recode-engine@gmail.com" },
+]
+description = "Rule-based extensible media transcode engine"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "FFmpyg-DavidRodriguezSoaresCUI>=0.0.7"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/DavidRodriguezSoaresCUI/recode-engine"
+"Bug Tracker" = "https://github.com/DavidRodriguezSoaresCUI/recode-engine/issues"

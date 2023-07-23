@@ -1,0 +1,120 @@
+recode-engine: 0.0.1
+description: POC for recode-engine recipes
+recipe:
+  input:
+    extension:
+      whitelist:
+      - mp4
+      - mkv
+    size:
+      min: 100M
+      max: 2G
+    duration:
+      min: 5 min
+      max: 1 h 32 min
+    streams:
+      video:
+        nb-streams:
+          min: 1
+          max: 1
+        width:
+          min: 480
+          max: 1920
+        height:
+          min: 360
+          max: 1080
+        bitrate:
+          min: 800K
+          max: 12M
+        codec:
+          blacklist:
+          - av1
+          - hevc
+          - vp9
+      audio:
+        nb-streams:
+          min: 2
+        codec:
+          whitelist:
+          - aac
+          - mp3
+      subtitle:
+        nb-streams:
+          max: 10
+      attachment:
+        nb-streams:
+          max: 0
+    has-chapters: true
+  arguments:
+    target-extension:
+      type: str
+      whitelist:
+      - mp4
+      - mkv
+      default: mp4
+      required: false
+    video-target-bitrate:
+      type: int
+      default: 2M
+      required: true
+  stream-processor:
+    video:
+      case:
+      - default:
+          processor: FFmpegTargetBitrate2passEncode
+          parameters:
+            encoder: ffmpeg-libx264
+            target_bitrate: $video-target-bitrate
+      - if:
+          quality-index:
+            max: 0.09
+          then:
+            processor: copy
+      - if:
+          bitrate:
+            max: 1100M
+          then:
+            processor: copy
+    audio:
+      case:
+      - default:
+          processor: ExternalEncode
+          parameters:
+            encoder: neroAAC
+            executable: "C:\\enc\\neroaac.exe"
+            parameters: -he
+      - if:
+          codec:
+            whitelist:
+            - aac
+          then:
+            processor: copy
+    subtitle:
+      case:
+      - default:
+          processor: copy
+      - if:
+          argument:
+            name: target-extension
+            value: mp4
+          then:
+            processor: FFmpegSimpleTranscode
+            parameters:
+              encoder: mov_text
+  post-processing:
+  - case:
+      - if:
+          argument:
+            name: target-extension
+            value: mp4
+          then:
+            processor: FFmpegSimpleMux
+      - if:
+          argument:
+            name: target-extension
+            value: mkv
+          then:
+            processor: MKVMergeSimpleMux
+  output:
+    suffix: _out
+    directory: "C:\\videos\\"
