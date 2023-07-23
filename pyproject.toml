@@ -19,7 +19,8 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  "FFmpyg-DavidRodriguezSoaresCUI>=0.0.7"
+  "FFmpyg-DavidRodriguezSoaresCUI>=0.0.7",
+  "asciimatics"
 ]
 
 [project.urls]
